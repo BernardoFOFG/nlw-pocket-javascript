@@ -6,11 +6,16 @@ import {
 } from "fastify-type-provider-zod";
 import { getWeekPendingGoals } from "../functions/get-week-pending-goals";
 import { createGoalRoute } from "./routes/create-goals";
-import { createCompletionRoute} from "./routes/create-completion";
+import { createCompletionRoute } from "./routes/create-completion";
 import { getPendingGoalsRoute } from "./routes/get-pending-goals";
 import { getWeekSummaryRoute } from "./routes/get-week-summary";
+import fastifyCors from "@fastify/cors";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>(); // Essas linhas servem para passar habilitar o plugin do zod validar as informações passadas no corpo da requisição
+app.register(fastifyCors, {
+  origin: "*", // Configura a URL do front-end que vai acessar esse back-end
+});
+
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
