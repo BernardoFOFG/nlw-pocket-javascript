@@ -26,6 +26,9 @@
       },
       "a11y": {
         "noLabelWithoutControl": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off"
       }
     }
   },
