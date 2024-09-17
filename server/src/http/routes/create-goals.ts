@@ -7,7 +7,6 @@ export const createGoalRoute: FastifyPluginAsyncZod = async (app) => {
     "/goals",
     {
       schema: {
-        // Aqui eu passo o schema de validação dentro da rota!
         body: z.object({
           title: z.string(),
           desiredWeeklyFrequency: z.number().int().min(1).max(7),
@@ -15,11 +14,14 @@ export const createGoalRoute: FastifyPluginAsyncZod = async (app) => {
       },
     },
     async (request) => {
-      const { title, desiredWeeklyFrequency } = request.body; // Destruturando os valores do corpo e passando para a função de inserção no banco
-      await createGoal({
-        title: title,
-        desiredWeeklyFrequency: desiredWeeklyFrequency,
+      const { title, desiredWeeklyFrequency } = request.body;
+
+      const { goal } = await createGoal({
+        title,
+        desiredWeeklyFrequency,
       });
+
+      return { goalId: goal.id };
     }
   );
 };

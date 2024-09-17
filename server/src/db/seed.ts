@@ -1,24 +1,26 @@
+import { goals } from "./schema";
+import { goalCompletions } from "./schema/goal-completions";
 import dayjs from "dayjs";
 import { client, db } from ".";
-import { goalCompletions, goals } from "./schema";
+import { fakerPT_BR as faker } from "@faker-js/faker";
 
 async function seed() {
   await db.delete(goalCompletions);
   await db.delete(goals);
 
-  const resultGoals = await db
+  const [goal1, goal2] = await db
     .insert(goals)
     .values([
       {
-        title: "Acordar cedo",
-        desiredWeeklyFrequency: 5,
+        title: faker.lorem.words(3),
+        desiredWeeklyFrequency: 1,
       },
       {
-        title: "Me exercitar",
-        desiredWeeklyFrequency: 3,
+        title: faker.lorem.words(3),
+        desiredWeeklyFrequency: 2,
       },
       {
-        title: "Meditar",
+        title: faker.lorem.words(3),
         desiredWeeklyFrequency: 1,
       },
     ])
@@ -27,17 +29,12 @@ async function seed() {
   const startOfWeek = dayjs().startOf("week");
 
   await db.insert(goalCompletions).values([
-    {
-      goalId: resultGoals[0].id,
-      createdAt: startOfWeek.toDate(),
-    },
-    {
-      goalId: resultGoals[1].id,
-      createdAt: startOfWeek.add(1, "day").toDate(),
-    },
+    { goalId: goal1.id, createdAt: startOfWeek.toDate() },
+    { goalId: goal2.id, createdAt: startOfWeek.add(1, "day").toDate() },
   ]);
 }
 
-seed().finally(() => {
+seed().then(() => {
+  console.log("🌱 Database seeded successfully!");
   client.end();
 });
